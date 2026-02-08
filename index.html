@@ -68,25 +68,79 @@
         button:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,255,136,0.4); }
         footer { background: rgba(0,0,0,0.9); padding: 2rem; text-align: center; border-top: 1px solid rgba(0,255,136,0.2); }
         @media (max-width: 768px) { h1 { font-size: 2rem; } .players { grid-template-columns: 1fr; } header { flex-direction: column; gap: 1rem; } }
+        /* Mobil menü */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.3s;
+}
+.mobile-menu-btn:hover { color: #00ff88; transform: scale(1.1); }
+
+/* Mobil breakpoint */
+@media (max-width: 1024px) {
+    .mobile-menu-btn { display: block; }
+    nav, .social-header {
+        position: fixed;
+        top: 80px; /* Header magasság alatt */
+        left: 0; width: 100%;
+        background: rgba(0,0,0,0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 2rem;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    nav.active, .social-header.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    nav { gap: 1.5rem; }
+    .social-header { top: 320px; gap: 2rem; padding-bottom: 2rem; border-top: 1px solid rgba(0,255,136,0.2); }
+}
+
+/* Nagyobb mobil/tablet finomhang */
+@media (max-width: 768px) {
+    header { padding: 1rem 5%; }
+    .logo { font-size: 1.2rem; }
+    nav a { font-size: 1.2rem; padding: 0.5rem 0; display: block; }
+    .social-icon { font-size: 1.5rem; }
+}
+
+/* Extra kicsi telefonok */
+@media (max-width: 480px) {
+    section { padding: 100px 5% 30px; }
+    h1 { font-size: 2rem; }
+}
+
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">Huncut</div>
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#music">Music</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
-        <div class="social-header">
-            <a href="mailto:sirokman.alex@gmail.com class="social-icon" title="Email"><i class="fas fa-envelope"></i></a>
-            <a href="https://instagram.com/sirokmanalex" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://soundcloud.com/huncut-official" class="social-icon" title="SoundCloud"><i class="fab fa-soundcloud"></i></a>
-            <a href="https://huncut.bandcamp.com/" class="social-icon" title="Bandcamp"><i class="fab fa-bandcamp"></i></a>
-        </div>
-    </header>
-
+    <div class="logo">Huncut</div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+    <nav id="mainNav">
+        <a href="#home">Home</a>
+        <a href="#music">Music</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <div class="social-header" id="mainSocial">
+        <a href="mailto:sirokman.alex@gmail.com class="social-icon" title="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://instagram.com/sirokmanalex" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://soundcloud.com/huncut-official" class="social-icon" title="SoundCloud"><i class="fab fa-soundcloud"></i></a>
+        <a href="https://huncut.bandcamp.com/" class="social-icon" title="Bandcamp"><i class="fab fa-bandcamp"></i></a>
+    </div>
+</header>
     <section id="home" class="hero">
         <h1>Huncut</h1>
         <p>Electronic Music Producer, DJ</p>
@@ -136,6 +190,36 @@
     </footer>
 
     <script>
+        // Mobil hamburger menü
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mainNav = document.getElementById('mainNav');
+const mainSocial = document.getElementById('mainSocial');
+
+mobileMenuBtn.addEventListener('click', () => {
+    const isActive = mainNav.classList.contains('active');
+    mainNav.classList.toggle('active');
+    mainSocial.classList.toggle('active');
+    mobileMenuBtn.querySelector('i').className = isActive ? 'fas fa-bars' : 'fas fa-times'; // Bars ↔ X
+});
+
+// Menü zárás kattintásra (jobb UX)
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        mainNav.classList.remove('active');
+        mainSocial.classList.remove('active');
+        mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+    });
+});
+
+// Scroll-on menü bezárás
+window.addEventListener('scroll', () => {
+    if (window.innerWidth <= 1024) {
+        mainNav.classList.remove('active');
+        mainSocial.classList.remove('active');
+        mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+    }
+});
+
         // Smooth scroll minden linkre
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
